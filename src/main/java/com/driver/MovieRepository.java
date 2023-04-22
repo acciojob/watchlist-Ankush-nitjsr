@@ -57,4 +57,15 @@ public class MovieRepository {
     public List<String> getAllMovies() {
         return movieData.keySet().stream().collect(Collectors.toList());
     }
+
+    public void deleteDirectorByName(String directorName){
+        directorData.remove(directorName);
+        pairData.entrySet().removeIf(e -> e.getValue().equals(directorName));
+    }
+
+    public void deleteAllDirectors(){
+        directorData.clear();
+        pairData.clear();
+    }
+
 }

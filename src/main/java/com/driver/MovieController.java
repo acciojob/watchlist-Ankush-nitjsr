@@ -80,5 +80,24 @@ public class MovieController {
         return new ResponseEntity<>(ans,HttpStatus.OK);
     }
     //deleteDirectorByName
+    @DeleteMapping("/delete-director-by-name")
+    public ResponseEntity deleteDirectorByName(@RequestParam String directorName){
+        try {
+            movieService.deleteDirectorByName(directorName);
+            return new ResponseEntity("director deleted successfully", HttpStatus.OK);
+        } catch (DirectorNotFoundException ex){
+            return new ResponseEntity(ex.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
     //deleteAllDirectors
+    @DeleteMapping("/delete-all-directors")
+    public ResponseEntity deleteAllDirectors(){
+        try {
+            movieService.deleteAllDirectors();
+            return new ResponseEntity("All director deleted successfully", HttpStatus.OK);
+        } catch (DirectorNotFoundException ex){
+            return new ResponseEntity(ex.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
 }
