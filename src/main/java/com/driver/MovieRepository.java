@@ -11,14 +11,19 @@ import java.util.stream.Collectors;
 @Repository
 
 public class MovieRepository {
-    Map<String, Movie> movieData = new HashMap<>();
-    Map<String, Director> directorData = new HashMap<>();
-    Map<String, String> pairData = new HashMap<>();
+    private Map<String, Movie> movieData;
+    private Map<String, Director> directorData;
+    private Map<String, String> pairData;
 
-    public Boolean addMovie(Movie movie){
+    public MovieRepository(){
+        this.movieData = new HashMap<String, Movie>();
+        this.directorData = new HashMap<String, Director>();
+        this.pairData = new HashMap<String, String>();
+    }
+
+    public void saveMovie(Movie movie){
         String key = movie.getName();
         movieData.put(key, movie);
-        return true;
     }
     public Optional<Movie> getMovieByName(String name){
         if(movieData.containsKey(name)) {
@@ -28,7 +33,7 @@ public class MovieRepository {
     }
 
 
-    public Boolean addDirector(Director director) {
+    public Boolean saveDirector(Director director) {
         String key = director.getName();
         directorData.put(key, director);
         return true;

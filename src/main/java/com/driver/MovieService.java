@@ -12,23 +12,15 @@ import java.util.Optional;
 @Service
 
 public class MovieService {
-    @Autowired
-    MovieRepository movieRepository;
 
-    public Boolean addMovie(@RequestBody Movie movie) {
-        Optional<Movie> movieOptional = movieRepository.getMovieByName(movie.getName());
-        if (movieOptional.isPresent()){
-            throw new MovieAlreadyExistsException(movie.getName());
-        }
-        return movieRepository.addMovie(movie);
+    MovieRepository movieRepository = new MovieRepository();
+
+    public void addMovie(@RequestBody Movie movie) {
+        movieRepository.saveMovie(movie);
     }
 
-    public Boolean addDirector(@RequestBody Director director) {
-        Optional<Director> directorOptional = movieRepository.getDirectorByName(director.getName());
-        if (directorOptional.isPresent()){
-            throw new MovieAlreadyExistsException(director.getName());
-        }
-        return movieRepository.addDirector(director);
+    public void addDirector(@RequestBody Director director) {
+        movieRepository.saveDirector(director);
     }
 
     public String addMovieDirectorPair(@RequestParam String movieName, @RequestParam String directorName) {
