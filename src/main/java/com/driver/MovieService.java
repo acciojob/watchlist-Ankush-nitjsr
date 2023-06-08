@@ -10,48 +10,39 @@ public class MovieService {
 
     MovieRepository movieRepository = new MovieRepository();
 
-    public void addMovie(Movie movie) {
+    public void addMovie(Movie movie){
         movieRepository.saveMovie(movie);
     }
 
-    public void addDirector(Director director) {
+    public void addDirector(Director director){
         movieRepository.saveDirector(director);
     }
 
-    public void createMovieDirectorPair(String movieName, String directorName) {
-        movieRepository.saveMovieDirectorPair(movieName, directorName);
+    public void createMovieDirectorPair(String movie, String director){
+        movieRepository.saveMovieDirectorPair(movie, director);
     }
 
-    public Movie getMovieByName(String movieName) {
-        return movieRepository.getMovieByName(movieName);
+    public Movie findMovie(String movieName){
+        return movieRepository.findMovie(movieName);
     }
 
-    public Director getDirectorByName(String directorName) {
-        return movieRepository.getDirectorByName(directorName);
+    public Director findDirector(String directorName){
+        return movieRepository.findDirector(directorName);
     }
 
     public List<String> findMoviesFromDirector(String director){
         return movieRepository.findMoviesFromDirector(director);
     }
 
-    public List<String> findAllMovies() {
-        return movieRepository.getAllMovies();
+    public List<String> findAllMovies(){
+        return movieRepository.findAllMovies();
     }
 
-    public void deleteDirectorByName(String directorName) {
-        movieRepository.deleteDirectorByName(directorName);
+    public void deleteDirector(String director){
+        movieRepository.deleteDirector(director);
     }
 
-    public void deleteAllDirectors() {
-        List<String> allDirectorsList = movieRepository.getAllDirectors();
-        for (String directorName : allDirectorsList){
-            deleteDirectorByName(directorName);
-        }
+    public void deleteAllDirectors(){
+        movieRepository.deleteAllDirector();
     }
-
-
-    //getMoviesByDirectorName
-    //findAllMovies
-    //deleteDirectorByName
-    //deleteAllDirectors
 }
