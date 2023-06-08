@@ -1,7 +1,5 @@
 package com.driver;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,8 +21,8 @@ public class MovieService {
         movieRepository.saveDirector(director);
     }
 
-    public String addMovieDirectorPair(@RequestParam String movieName, @RequestParam String directorName) {
-        return movieRepository.addMovieDirectorPair(movieName, directorName);
+    public void createMovieDirectorPair(@RequestParam String movieName, @RequestParam String directorName) {
+        movieRepository.saveMovieDirectorPair(movieName, directorName);
     }
 
     public Movie getMovieByName(@RequestParam String name) {
@@ -56,7 +54,10 @@ public class MovieService {
     }
 
     public void deleteAllDirectors() {
-        movieRepository.deleteAllDirectors();
+        List<String> allDirectorsList = movieRepository.getAllDirectors();
+        for (String directorName : allDirectorsList){
+            deleteDirectorByName(directorName);
+        }
     }
 
 

@@ -2,32 +2,30 @@ package com.driver;
 
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
 
 public class MovieRepository {
-    private Map<String, Movie> movieData;
-    private Map<String, Director> directorData;
-    private Map<String, String> pairData;
+    private Map<String, Movie> movieMap;
+    private Map<String, Director> directorMap;
+    private Map<String, List<String>> directorMovieMap;
+    // Pair is : DirectorName, List of Movie names
 
     public MovieRepository(){
-        this.movieData = new HashMap<String, Movie>();
-        this.directorData = new HashMap<String, Director>();
-        this.pairData = new HashMap<String, String>();
+        this.movieMap = new HashMap<String, Movie>();
+        this.directorMap = new HashMap<String, Director>();
+        this.directorMovieMap = new HashMap<String, List<String>>();
     }
 
     public void saveMovie(Movie movie){
         String key = movie.getName();
-        movieData.put(key, movie);
+        movieMap.put(key, movie);
     }
     public Optional<Movie> getMovieByName(String name){
-        if(movieData.containsKey(name)) {
-            return Optional.of(movieData.get(name));
+        if(movieMap.containsKey(name)) {
+            return Optional.of(movieMap.get(name));
         }
         return Optional.empty();
     }
@@ -35,42 +33,62 @@ public class MovieRepository {
 
     public Boolean saveDirector(Director director) {
         String key = director.getName();
-        directorData.put(key, director);
+        directorMap.put(key, director);
         return true;
     }
 
     public Optional<Director> getDirectorByName(String name) {
-        if (directorData.containsKey(name)){
-            return Optional.of(directorData.get(name));
+        if (directorMap.containsKey(name)){
+            return Optional.of(directorMap.get(name));
         }
         return Optional.empty();
     }
 
-    public String addMovieDirectorPair(String movieName, String directorName) {
-        pairData.put(movieName, directorName);
-        return "Paired successfully";
+    public void saveMovieDirectorPair(String movieName, String directorName) {
+        if (movieMap.containsKey(movieName) && directorMap.containsKey(directorName)){
+            List<String> currentMoviesByDirector = new ArrayList<>();
+            if (directorMovieMap.containsKey(directorName)){
+                currentMoviesByDirector = directorMovieMap.get(directorName);
+                currentMoviesByDirector.add(movieName);
+                directorMovieMap.put(directorName, currentMoviesByDirector);
+            }
+        }
     }
 
     public List<String> getMoviesByItsDirectorName(String directorName) {
-        return pairData.entrySet()
-                .stream()
-                .filter(e -> e.getValue().equals(directorName))
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toList());
+        List<String> movieList = new ArrayList<>();
+        if (directorMovieMap.containsKey(directorName)) {
+            movieList = directorMovieMap.get(directorName);
+        }
+        return movieList;
     }
 
     public List<String> getAllMovies() {
-        return movieData.keySet().stream().collect(Collectors.toList());
+        return new ArrayList<>(movieMap.keySet());
     }
 
     public void deleteDirectorByName(String directorName){
-        directorData.remove(directorName);
-        pairData.entrySet().removeIf(e -> e.getValue().equals(directorName));
+        List<String> movies = new ArrayList<>();
+        if (directorMovieMap.containsKey(directorName)){
+            // 1. find all movies from pair by director name
+            movies = directorMovieMap.get(directorName);
+
+            // 2. Deleting all movies from movieMap by using movieName
+            for (String movie : movies){
+                movieMap.remove(movie);
+            }
+
+            // 3. Deleting the pair
+            directorMovieMap.remove(directorName);
+        }
+
+        // 4. Deleting director from directorMap
+        if (directorMap.containsKey(directorName)){
+            directorMap.remove(directorName);
+        }
     }
 
-    public void deleteAllDirectors(){
-        directorData.clear();
-        pairData.clear();
+    public List<String> getAllDirectors() {
+        return new ArrayList<>(directorMap.keySet());
     }
-
 }
