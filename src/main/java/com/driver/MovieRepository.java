@@ -23,29 +23,24 @@ public class MovieRepository {
         String key = movie.getName();
         movieMap.put(key, movie);
     }
-    public Optional<Movie> getMovieByName(String name){
-        if(movieMap.containsKey(name)) {
-            return Optional.of(movieMap.get(name));
-        }
-        return Optional.empty();
+    public Movie getMovieByName(String movieName){
+        return movieMap.get(movieName);
     }
 
 
-    public Boolean saveDirector(Director director) {
+    public void saveDirector(Director director) {
         String key = director.getName();
         directorMap.put(key, director);
-        return true;
     }
 
-    public Optional<Director> getDirectorByName(String name) {
-        if (directorMap.containsKey(name)){
-            return Optional.of(directorMap.get(name));
-        }
-        return Optional.empty();
+    public Director getDirectorByName(String directorName) {
+        return directorMap.get(directorName);
     }
 
     public void saveMovieDirectorPair(String movieName, String directorName) {
         if (movieMap.containsKey(movieName) && directorMap.containsKey(directorName)){
+            movieMap.put(movieName, movieMap.get(movieName));
+            directorMap.put(directorName, directorMap.get(directorName));
             List<String> currentMoviesByDirector = new ArrayList<>();
             if (directorMovieMap.containsKey(directorName)){
                 currentMoviesByDirector = directorMovieMap.get(directorName);
@@ -55,12 +50,10 @@ public class MovieRepository {
         }
     }
 
-    public List<String> getMoviesByItsDirectorName(String directorName) {
-        List<String> movieList = new ArrayList<>();
-        if (directorMovieMap.containsKey(directorName)) {
-            movieList = directorMovieMap.get(directorName);
-        }
-        return movieList;
+    public List<String> findMoviesFromDirector(String director){
+        List<String> moviesList = new ArrayList<String>();
+        if(directorMovieMap.containsKey(director)) moviesList = directorMovieMap.get(director);
+        return moviesList;
     }
 
     public List<String> getAllMovies() {
@@ -69,15 +62,16 @@ public class MovieRepository {
 
     public void deleteDirectorByName(String directorName){
         List<String> movies = new ArrayList<>();
-        if (directorMovieMap.containsKey(directorName)){
+        if (directorMovieMap.containsKey(directorName)) {
             // 1. find all movies from pair by director name
             movies = directorMovieMap.get(directorName);
 
             // 2. Deleting all movies from movieMap by using movieName
-            for (String movie : movies){
-                movieMap.remove(movie);
+            for (String movie : movies) {
+                if (movieMap.containsKey(movie)) {
+                    movieMap.remove(movie);
+                }
             }
-
             // 3. Deleting the pair
             directorMovieMap.remove(directorName);
         }

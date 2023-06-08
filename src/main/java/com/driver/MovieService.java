@@ -1,11 +1,8 @@
 package com.driver;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 
@@ -13,43 +10,35 @@ public class MovieService {
 
     MovieRepository movieRepository = new MovieRepository();
 
-    public void addMovie(@RequestBody Movie movie) {
+    public void addMovie(Movie movie) {
         movieRepository.saveMovie(movie);
     }
 
-    public void addDirector(@RequestBody Director director) {
+    public void addDirector(Director director) {
         movieRepository.saveDirector(director);
     }
 
-    public void createMovieDirectorPair(@RequestParam String movieName, @RequestParam String directorName) {
+    public void createMovieDirectorPair(String movieName, String directorName) {
         movieRepository.saveMovieDirectorPair(movieName, directorName);
     }
 
-    public Movie getMovieByName(@RequestParam String name) {
-        Optional<Movie> movieOptional = movieRepository.getMovieByName(name);
-        if (movieOptional.isEmpty()){
-            throw new MovieNotFoundException(name);
-        }
-        return movieOptional.get();
+    public Movie getMovieByName(String movieName) {
+        return movieRepository.getMovieByName(movieName);
     }
 
-    public Director getDirectorByName(@RequestParam String name) {
-        Optional<Director> directorOptional = movieRepository.getDirectorByName(name);
-        if (directorOptional.isEmpty()){
-            throw new DirectorNotFoundException(name);
-        }
-        return directorOptional.get();
+    public Director getDirectorByName(String directorName) {
+        return movieRepository.getDirectorByName(directorName);
     }
 
-    public List<String> getMoviesByItsDirectorName(@RequestParam String directorName) {
-        return movieRepository.getMoviesByItsDirectorName(directorName);
+    public List<String> findMoviesFromDirector(String director){
+        return movieRepository.findMoviesFromDirector(director);
     }
 
     public List<String> findAllMovies() {
         return movieRepository.getAllMovies();
     }
 
-    public void deleteDirectorByName(@RequestParam String directorName) {
+    public void deleteDirectorByName(String directorName) {
         movieRepository.deleteDirectorByName(directorName);
     }
 
